@@ -5,8 +5,14 @@ import requests
 
 
 def scrapeGym(gym):
+    try:
+        response = requests.get("https://connect.recsports.vt.edu/facilityoccupancy")
+        response.raise_for_status()
+        htmltext = response.text
+    except requests.RequestException as e:
+        return f"Request failed: {e}"
 
-    htmltext = requests.get("https://connect.recsports.vt.edu/facilityoccupancy").text
+
     soup = BeautifulSoup(htmltext, "lxml")
 
     canvas = soup.find_all("canvas", class_="occupancy-chart")
