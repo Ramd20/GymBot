@@ -3,19 +3,19 @@ import requests
 
 
 
-
+#Fucntion will be used in main
 def scrapeGym(gym):
     try:
         response = requests.get("https://connect.recsports.vt.edu/facilityoccupancy")
         response.raise_for_status()
-        htmltext = response.text
+        htmltext = response.text                           #This section is just for user display
     except requests.RequestException as e:
         return f"Request failed: {e}"
 
 
-    soup = BeautifulSoup(htmltext, "lxml")
+    soup = BeautifulSoup(htmltext, "lxml")   # This creates the parser
 
-    canvas = soup.find_all("canvas", class_="occupancy-chart")
+    canvas = soup.find_all("canvas", class_="occupancy-chart") # Finds all occupancy charts there are duplicates
 
 
     if canvas:
