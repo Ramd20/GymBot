@@ -2,9 +2,9 @@ name: Bot Scheduler
 
 on:
   schedule:
-    - cron: "0 13 * * *"  # 9 AM UTC
-    - cron: "0 3 * * *"   # 11 PM UTC
-  workflow_dispatch:       # lets you trigger it manually too
+    - cron: "0 13 * * *"  # 9 AM UTC (Eastern Time gym opens)
+    - cron: "0 3 * * *"   # 11 PM UTC (Eastern Time gym closes)
+  workflow_dispatch:       # allows manual triggering from GitHub UI
 
 jobs:
   toggle-active:
@@ -15,16 +15,13 @@ jobs:
           curl -fsSL https://railway.app/install.sh | sh
           export PATH="$HOME/.railway/bin:$PATH"
 
-      - name: Login to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          railway login --token $RAILWAY_TOKEN
-
       - name: Set ACTIVE and Redeploy
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
+          export PATH="$HOME/.railway/bin:$PATH"
+
+          # Decide which value to set based on the schedule time
           if [ "${{ github.event.schedule }}" == "0 13 * * *" ]; then
             echo "Setting ACTIVE=True"
             railway variables set ACTIVE True
@@ -33,4 +30,5 @@ jobs:
             railway variables set ACTIVE False
           fi
 
+          # Redeploy the project with updated env var
           railway up --yes
