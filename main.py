@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()  # load variables from .env into environment
 
 SECRET_TOKEN = os.getenv("SECRET_TOKEN")
-ACTIVE = os.getenv("ACTIVE", "False") == "True"
+#ACTIVE = os.getenv("ACTIVE", "False") == "True"
 
 class Client(discord.Client):
     async def on_ready(self):
@@ -17,10 +17,11 @@ class Client(discord.Client):
             if message.author == self.user:
                 return
 
+            """
             if not ACTIVE:
                 await message.channel.send("Bot Hours: 9am to 11pm")
                 return
-
+            """
             userMessage = message.content.lower()[1:] #to ignore !
             if userMessage == "war" or userMessage == "mccomas":
                 await message.channel.send(scraper.scrapeGym(userMessage))
