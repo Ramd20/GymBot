@@ -21,14 +21,14 @@ jobs:
         run: |
           export PATH="$HOME/.railway/bin:$PATH"
 
-          # Decide which value to set based on the schedule time
+          # Decide what value to set based on the scheduled time
           if [ "${{ github.event.schedule }}" == "0 13 * * *" ]; then
             echo "Setting ACTIVE=True"
-            railway variables set ACTIVE True
+            railway variables add ACTIVE=True
           else
             echo "Setting ACTIVE=False"
-            railway variables set ACTIVE False
+            railway variables add ACTIVE=False
           fi
 
-          # Redeploy the project with updated env var
+          # Redeploy the project to apply changes
           railway up --yes
