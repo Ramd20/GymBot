@@ -2,33 +2,33 @@ name: Bot Scheduler
 
 on:
   schedule:
-    - cron: "0 13 * * *"  # 9 AM UTC (Eastern Time)
-    - cron: "0 3 * * *"   # 11 PM UTC (Eastern Time)
+    - cron: "0 13 * * *"  # 9 AM ET
+    - cron: "0 3 * * *"   # 11 PM ET
   workflow_dispatch:
 
 jobs:
   toggle-active:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Install Railway CLI
+      - name: Install Railway CLI and Toggle ACTIVE
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           curl -fsSL https://railway.app/install.sh | sh
           export PATH="$HOME/.railway/bin:$PATH"
 
-      - name: Set ACTIVE and Redeploy
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          export PATH="$HOME/.railway/bin:$PATH"
+          echo "Event schedule: ${{ github.event.schedule }}"
 
-          # Decide what value to set
+          SERVICE_NAME="GymBot"
+
           if [ "${{ github.event.schedule }}" == "0 13 * * *" ]; then
             echo "Setting ACTIVE=True"
-            railway variables --env production ACTIVE=True
+            railway variables set ACTIVE=true --service "$SERVICE_NAME" --environment production
           else
             echo "Setting ACTIVE=False"
-            railway variables --env production ACTIVE=False
+            railway variables set ACTIVE=false --service "$SERVICE_NAME" --environment production
           fi
 
-          # Redeploy project
-          railway up --yes
+          # Redeploy the GymBot service
+          railway up --service "$SERVICE_NAME" --environment production --yes
