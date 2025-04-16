@@ -22,7 +22,6 @@ jobs:
         run: |
           SERVICE_NAME="GymBot"
           
-          # Check which schedule triggered the workflow
           if [[ "${{ github.event.schedule }}" == "0 13 * * *" ]]; then
             echo "Setting ACTIVE=True (9 AM ET)"
             railway variables --service "$SERVICE_NAME" --environment production --set ACTIVE=true
@@ -35,4 +34,4 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up --service "GymBot" --environment production --no-confirm
+          railway up --service "GymBot" --environment production
