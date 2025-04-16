@@ -24,10 +24,10 @@ jobs:
 
           if [ "${{ github.event.schedule }}" == "0 13 * * *" ]; then
             echo "Setting ACTIVE=True"
-            railway variables set ACTIVE=true --service "$SERVICE_NAME" --environment production
+            railway variables --service "$SERVICE_NAME" --environment production --set ACTIVE=true
           else
             echo "Setting ACTIVE=False"
-            railway variables set ACTIVE=false --service "$SERVICE_NAME" --environment production
+            railway variables --service "$SERVICE_NAME" --environment production --set ACTIVE=false
           fi
 
           # Redeploy the GymBot service
